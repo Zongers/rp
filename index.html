@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agent Portal</title>
+	<link rel="icon" href="https://i.ibb.co/cc7XR7PF/icon1.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -29,6 +30,10 @@
             --transition: all 0.2s ease;
             --disabled-bg: #f1f2f6;
             --disabled-text: #b2bec3;
+            --excel-bg: #e8eaed;
+            --filter-bg: #f8f9fa;
+            --filter-active: #6c5ce7;
+            --filter-active-text: #ffffff;
         }
 
         * {
@@ -45,10 +50,11 @@
             display: flex;
             flex-direction: column;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
             margin: 0 auto;
             padding: 20px;
@@ -70,6 +76,26 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
         }
 
         .tool-container {
@@ -161,6 +187,17 @@
             background: #e66767;
         }
 
+        .btn-secondary {
+            background: var(--secondary-light);
+            color: var(--secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
         .btn:disabled {
             background-color: var(--disabled-bg);
             color: var(--disabled-text);
@@ -173,6 +210,7 @@
             right: 20px;
             padding: 8px 12px;
             font-size: 0.85rem;
+            max-width: 120px;
         }
 
         .stats-grid {
@@ -273,6 +311,69 @@
             padding: 15px 0;
         }
 
+        /* Excel View Styles */
+        .excel-container {
+            background: var(--excel-bg);
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .excel-table th, .excel-table td {
+            border: 1px solid #d0d0d0;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .excel-table th {
+            background-color: #f0f0f0;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .excel-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .excel-table tr:hover {
+            background-color: #f0f7ff;
+        }
+
+        /* Filter Styles */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--filter-bg);
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background: var(--filter-active);
+            color: var(--filter-active-text);
+            border-color: var(--filter-active);
+        }
+
         /* Animation Effects */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -291,6 +392,12 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        @keyframes buttonSuccess {
+            0% { background-color: var(--primary); }
+            50% { background-color: var(--success); }
+            100% { background-color: var(--primary); }
+        }
+
         .animate-fadeIn {
             animation: fadeIn 0.5s ease forwards;
         }
@@ -302,6 +409,10 @@
         .checkmark {
             display: inline-block;
             animation: checkmark 0.5s ease forwards;
+        }
+
+        .button-success {
+            animation: buttonSuccess 1s ease;
         }
 
         /* Login Animation */
@@ -317,7 +428,57 @@
             font-size: 3rem;
             color: var(--primary);
             margin-bottom: 20px;
-            animation: pulse 2s infinite;
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            animation: dotPulse 1.5s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* Hide number input arrows */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
         }
 
         /* Responsive Design */
@@ -336,6 +497,27 @@
             
             .half-selector {
                 flex-direction: column;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+            }
+            
+            .filter-container {
+                flex-wrap: wrap;
+            }
+            
+            .btn-logout {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 15px;
+                max-width: 100%;
+                width: auto;
             }
         }
 
@@ -358,11 +540,20 @@
                 right: 0;
                 margin-bottom: 15px;
                 width: 100%;
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-user-tie"></i> Agent Portal</h1>
@@ -378,9 +569,9 @@
                 <div class="login-form">
                     <div class="form-group">
                         <label for="agentId">Agent ID</label>
-                        <input type="number" id="agentId" class="form-input" placeholder="Enter your agent ID">
+                        <input type="number" id="agentId" class="form-input" placeholder="Enter your agent ID" maxlength="10">
                     </div>
-                    <button class="btn btn-primary" onclick="loginAgent()">
+                    <button class="btn btn-primary" id="loginButton" onclick="loginAgent()">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                 </div>
@@ -395,55 +586,98 @@
             <h2>Daily Report - <span id="agentName">Agent Name</span></h2>
             <p id="currentDate" style="text-align: center; margin-bottom: 15px; color: var(--text-secondary);"></p>
             
-            <div class="half-selector">
-                <button class="half-btn" id="firstHalfBtn" data-half="first" onclick="selectHalf('first')">First Half (10AM - 2PM)</button>
-                <button class="half-btn" id="secondHalfBtn" data-half="second" onclick="selectHalf('second')">Second Half (2PM - 10PM)</button>
-            </div>
-            
-            <div id="statusMessage" class="status-message"></div>
-            
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <label for="attendance">Attendance</label>
-                    <input type="text" id="attendance" maxlength="20" placeholder="Enter attendance status">
+            <div class="tabs">
+                <div class="tab active" data-tab="report" onclick="switchTab('report')">
+                    <i class="fas fa-chart-line"></i> Daily Report
                 </div>
-                <div class="stat-box">
-                    <label for="connectedCalls">Total Connected Calls</label>
-                    <input type="number" id="connectedCalls" min="0" max="9999" value="0">
-                </div>
-                <div class="stat-box">
-                    <label for="ordersPlaced">Total Orders Placed</label>
-                    <input type="number" id="ordersPlaced" min="0" max="9999" value="0">
-                </div>
-                <div class="stat-box">
-                    <label for="successful">Successful</label>
-                    <input type="number" id="successful" min="0" max="9999" value="0">
-                </div>
-                <div class="stat-box">
-                    <label for="pending">Pending</label>
-                    <input type="number" id="pending" min="0" max="9999" value="0">
-                </div>
-                <div class="stat-box">
-                    <label for="cancelled">Cancelled</label>
-                    <input type="number" id="cancelled" min="0" max="9999" value="0">
-                </div>
-                <div class="stat-box">
-                    <label for="overwritten">Overwritten</label>
-                    <input type="number" id="overwritten" min="0" max="9999" value="0">
+                <div class="tab" data-tab="excel" onclick="switchTab('excel')">
+                    <i class="fas fa-file-excel"></i> Team Report
                 </div>
             </div>
             
-            <button class="btn btn-success" id="saveButton" onclick="saveReport()">
-                <i class="fas fa-save"></i> Save Report
-            </button>
-            <button class="btn btn-primary" id="updateButton" style="display: none;" onclick="updateReport()">
-                <i class="fas fa-sync-alt"></i> Update Report
-            </button>
+            <div id="reportTab">
+                <div class="half-selector">
+                    <button class="half-btn" id="firstHalfBtn" data-half="first" onclick="selectHalf('first')">First Half (10AM - 3PM)</button>
+                    <button class="half-btn" id="secondHalfBtn" data-half="second" onclick="selectHalf('second')">Second Half (3PM - 10PM)</button>
+                </div>
+                
+                <div id="statusMessage" class="status-message"></div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <label for="attendance">Attendance</label>
+                        <input type="text" id="attendance" maxlength="20" placeholder="Enter attendance status">
+                    </div>
+                    <div class="stat-box">
+                        <label for="connectedCalls">Total Connected Calls</label>
+                        <input type="number" id="connectedCalls" min="0" max="9999" value="0">
+                    </div>
+                    <div class="stat-box">
+                        <label for="ordersPlaced">Total Orders Placed</label>
+                        <input type="number" id="ordersPlaced" min="0" max="9999" value="0">
+                    </div>
+                    <div class="stat-box">
+                        <label for="successful">Successful</label>
+                        <input type="number" id="successful" min="0" max="9999" value="0">
+                    </div>
+                    <div class="stat-box">
+                        <label for="pending">Pending</label>
+                        <input type="number" id="pending" min="0" max="9999" value="0">
+                    </div>
+                    <div class="stat-box">
+                        <label for="cancelled">Cancelled</label>
+                        <input type="number" id="cancelled" min="0" max="9999" value="0">
+                    </div>
+                    <div class="stat-box">
+                        <label for="overwritten">Overwritten</label>
+                        <input type="number" id="overwritten" min="0" max="9999" value="0">
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" id="saveButton" onclick="saveReport()">
+                    <i class="fas fa-save"></i> Save Report
+                </button>
+                <button class="btn btn-primary" id="updateButton" style="display: none;" onclick="updateReport()">
+                    <i class="fas fa-sync-alt"></i> Update Report
+                </button>
+            </div>
+            
+            <div id="excelTab" style="display: none;">
+                <div class="filter-container">
+                    <button class="filter-btn active" data-filter="first-half" onclick="setFilter('first-half')">1st Half</button>
+                    <button class="filter-btn" data-filter="second-half" onclick="setFilter('second-half')">2nd Half</button>
+                </div>
+                
+                <div class="excel-container">
+                    <table class="excel-table" id="excelTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Team Leader</th>
+                                <th>Attendance</th>
+                                <th>Connected Calls</th>
+                                <th>Orders Placed</th>
+                                <th>Successful</th>
+                                <th>Pending</th>
+                                <th>Cancelled</th>
+                                <th>Overwritten</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="11" style="text-align: center; padding: 20px;">Select a filter to view reports</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
     <footer>
-        © Agent Portal 2025 | Data is securely stored in Firebase
+        © Agent Portal 2025
     </footer>
 
     <!-- Firebase SDK -->
@@ -469,11 +703,16 @@
         
         let currentAgent = null;
         let currentHalf = '';
+        let currentFilter = 'first-half';
         let currentReportId = null;
         let isAuthenticating = false;
+        let allReports = [];
         
         // Set initial UI based on authentication state
         window.addEventListener('load', function() {
+            // Show loading animation initially
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
             // Hide both containers initially to prevent flash
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('reportContainer').style.display = 'none';
@@ -482,30 +721,48 @@
             setCurrentHalf();
             
             // Check authentication state
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    // User is signed in
-                    currentAgent = JSON.parse(localStorage.getItem('currentAgent'));
-                    showReportUI();
-                    checkExistingReport();
-                } else {
-                    // User is signed out
+            const savedAgent = localStorage.getItem('currentAgent');
+            if (savedAgent) {
+                try {
+                    currentAgent = JSON.parse(savedAgent);
+                    // Try to sign in with cached credentials for faster login
+                    auth.signInAnonymously()
+                        .then(() => {
+                            hideLoading();
+                            showReportUI();
+                            checkExistingReport();
+                        })
+                        .catch(() => {
+                            hideLoading();
+                            showLoginUI();
+                        });
+                } catch (e) {
+                    hideLoading();
                     showLoginUI();
                 }
-                isAuthenticating = false;
-            });
+            } else {
+                // Add a small delay to show loading animation for at least 1 second
+                setTimeout(() => {
+                    hideLoading();
+                    showLoginUI();
+                }, 1000);
+            }
         });
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
         
         // Set current half based on time
         function setCurrentHalf() {
             const now = new Date();
             const hours = now.getHours();
             
-            // First half: 10AM to 2PM (10 to 14)
-            // Second half: 2PM to 10PM (14 to 22)
-            if (hours >= 10 && hours < 14) {
+            // First half: 10AM to 3PM (10 to 15)
+            // Second half: 3PM to 10PM (15 to 22)
+            if (hours >= 10 && hours < 15) {
                 currentHalf = 'first';
-            } else if (hours >= 14 && hours < 22) {
+            } else if (hours >= 15 && hours < 22) {
                 currentHalf = 'second';
             } else {
                 // Outside working hours, default to first half
@@ -540,11 +797,11 @@
             document.querySelector(`[data-half="${currentHalf}"]`).classList.add('active');
             
             // Enable/disable based on current time
-            const isFirstHalfActive = (hours >= 10 && hours < 14);
-            const isSecondHalfActive = (hours >= 14 && hours < 22);
+            const isFirstHalfActive = (hours >= 10 && hours < 15);
+            const isSecondHalfActive = (hours >= 15 && hours < 22);
             
             // Enable input fields for the active half, disable for the other
-            const inputFields = document.querySelectorAll('.stat-box input');
+            const inputFields = document.querySelectorAll('#reportTab .stat-box input');
             
             if (currentHalf === 'first') {
                 inputFields.forEach(field => field.disabled = !isFirstHalfActive);
@@ -561,6 +818,49 @@
                 inputFields.forEach(field => field.disabled = true);
                 firstHalfBtn.disabled = true;
                 secondHalfBtn.disabled = true;
+            }
+        }
+        
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            // Update filter UI
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            // Filter and render the table
+            filterReports();
+        }
+        
+        function filterReports() {
+            let filteredReports = [];
+            
+            if (currentFilter === 'first-half') {
+                filteredReports = allReports.filter(report => report.half === 'first');
+            } else if (currentFilter === 'second-half') {
+                filteredReports = allReports.filter(report => report.half === 'second');
+            }
+            
+            renderExcelTable(filteredReports);
+        }
+        
+        function switchTab(tabName) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Show selected tab content
+            if (tabName === 'report') {
+                document.getElementById('reportTab').style.display = 'block';
+                document.getElementById('excelTab').style.display = 'none';
+            } else {
+                document.getElementById('reportTab').style.display = 'none';
+                document.getElementById('excelTab').style.display = 'block';
+                loadExcelData();
             }
         }
         
@@ -586,6 +886,7 @@
             const statusElement = document.getElementById('statusMessage');
             statusElement.textContent = message;
             statusElement.className = isSuccess ? 'status-message status-success' : 'status-message status-error';
+            statusElement.style.display = 'block';
             
             setTimeout(() => {
                 statusElement.style.display = 'none';
@@ -594,15 +895,23 @@
         
         function loginAgent() {
             const agentId = document.getElementById('agentId').value;
+            const loginBtn = document.getElementById('loginButton');
             
             if (!agentId) {
                 showStatus('Please enter your Agent ID', false);
                 return;
             }
             
-            // Add animation effect
-            const loginBtn = document.querySelector('.btn-primary');
-            loginBtn.classList.add('animate-pulse');
+            // Validate max length
+            if (agentId.length > 10) {
+                showStatus('Agent ID must be 10 characters or less', false);
+                return;
+            }
+            
+            // Show loading animation on button
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            loginBtn.disabled = true;
             
             // Verify agent ID
             verifyAgentId(agentId).then(agentData => {
@@ -613,20 +922,25 @@
                     // Sign in with Firebase anonymously
                     auth.signInAnonymously()
                         .then(() => {
-                            showReportUI();
-                            checkExistingReport();
+                            // Show success message
+                            loginBtn.innerHTML = '<i class="fas fa-check checkmark"></i> Login Successful!';
+                            setTimeout(() => {
+                                loginBtn.innerHTML = originalText;
+                                loginBtn.disabled = false;
+                                showReportUI();
+                                checkExistingReport();
+                            }, 1500);
                         })
                         .catch(error => {
+                            loginBtn.innerHTML = originalText;
+                            loginBtn.disabled = false;
                             showStatus('Login error: ' + error.message, false);
                         });
                 } else {
+                    loginBtn.innerHTML = originalText;
+                    loginBtn.disabled = false;
                     showStatus('Invalid Agent ID', false);
                 }
-                
-                // Remove animation
-                setTimeout(() => {
-                    loginBtn.classList.remove('animate-pulse');
-                }, 500);
             });
         }
         
@@ -796,6 +1110,59 @@
                 });
         }
         
+        function loadExcelData() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            const reportsRef = db.collection('reports')
+                .where('date', '==', today);
+            
+            reportsRef.get().then(snapshot => {
+                allReports = [];
+                snapshot.forEach(doc => {
+                    allReports.push(doc.data());
+                });
+                
+                filterReports();
+                showStatus(`Loaded ${allReports.length} reports for today`, true);
+            }).catch(error => {
+                console.error('Error loading reports:', error);
+                showStatus('Error loading reports: ' + error.message, false);
+            });
+        }
+        
+        function renderExcelTable(reports) {
+            const tableBody = document.querySelector('#excelTable tbody');
+            
+            if (reports.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px;">No reports found for the selected filter</td></tr>';
+                return;
+            }
+            
+            let tableHTML = '';
+            
+            reports.forEach(report => {
+                const status = report.attendance && report.attendance !== '' ? 'Submitted' : 'Pending';
+                
+                tableHTML += `
+                    <tr>
+                        <td>${report.agentId}</td>
+                        <td>${report.agentName}</td>
+                        <td>${report.teamLeader}</td>
+                        <td>${report.attendance || '-'}</td>
+                        <td>${report.connectedCalls || '0'}</td>
+                        <td>${report.ordersPlaced || '0'}</td>
+                        <td>${report.successful || '0'}</td>
+                        <td>${report.pending || '0'}</td>
+                        <td>${report.cancelled || '0'}</td>
+                        <td>${report.overwritten || '0'}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
         // Verify agent ID
         async function verifyAgentId(agentId) {
             // Agent data from the provided list
@@ -835,6 +1202,13 @@
         }
 
         // Input validation
+        document.getElementById('agentId').addEventListener('input', function(e) {
+            // Limit to 10 characters
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
+
         document.getElementById('attendance').addEventListener('input', function(e) {
             // Allow only letters and spaces, max 20 characters
             this.value = this.value.replace(/[^a-zA-Z\s]/g, '').substring(0, 20);

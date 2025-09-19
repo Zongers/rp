@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-light: #a29bfe;
+            --primary-dark: #5649c0;
+            --success: #00b894;
+            --success-bg: rgba(0, 184, 148, 0.2);
+            --danger: #ff7675;
+            --danger-bg: rgba(255, 118, 117, 0.2);
+            --warning: #fdcb6e;
+            --warning-bg: rgba(253, 203, 110, 0.2);
+            --secondary: #636e72;
+            --secondary-light: rgba(99, 110, 114, 0.1);
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --border-color: #dfe6e9;
+            --footer-color: #b2bec3;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease;
+            --disabled-bg: #f1f2f6;
+            --disabled-text: #b2bec3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .tool-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+
+        .form-input:disabled {
+            background-color: var(--disabled-bg);
+            color: var(--disabled-text);
+            cursor: not-allowed;
+        }
+
+        .btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00a884;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e66767;
+        }
+
+        .btn:disabled {
+            background-color: var(--disabled-bg);
+            color: var(--disabled-text);
+            cursor: not-allowed;
+        }
+
+        .btn-logout {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-box label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .stat-box input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .stat-box input:disabled {
+            background-color: var(--disabled-bg);
+            color: var(--disabled-text);
+        }
+
+        .half-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .half-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .half-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .half-btn:disabled {
+            background-color: var(--disabled-bg);
+            color: var(--disabled-text);
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-success {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success);
+            display: block;
+        }
+
+        .status-error {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto;
+            color: var(--footer-color);
+            font-size: 0.8rem;
+            padding: 15px 0;
+        }
+
+        /* Animation Effects */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .animate-pulse {
+            animation: pulse 0.5s ease;
+        }
+
+        .checkmark {
+            display: inline-block;
+            animation: checkmark 0.5s ease forwards;
+        }
+
+        /* Login Animation */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .half-selector {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .tool-container {
+                padding: 15px;
+            }
+            
+            .btn-logout {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-tie"></i> Agent Portal</h1>
+            <p>Enter your daily work report</p>
+        </div>
+
+        <div class="tool-container" id="loginContainer">
+            <div class="login-container">
+                <div class="login-icon">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h2>Agent Login</h2>
+                <div class="login-form">
+                    <div class="form-group">
+                        <label for="agentId">Agent ID</label>
+                        <input type="number" id="agentId" class="form-input" placeholder="Enter your agent ID">
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAgent()">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-container" id="reportContainer" style="display: none;">
+            <button class="btn btn-danger btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            
+            <h2>Daily Report - <span id="agentName">Agent Name</span></h2>
+            <p id="currentDate" style="text-align: center; margin-bottom: 15px; color: var(--text-secondary);"></p>
+            
+            <div class="half-selector">
+                <button class="half-btn" id="firstHalfBtn" data-half="first" onclick="selectHalf('first')">First Half (10AM - 2PM)</button>
+                <button class="half-btn" id="secondHalfBtn" data-half="second" onclick="selectHalf('second')">Second Half (2PM - 10PM)</button>
+            </div>
+            
+            <div id="statusMessage" class="status-message"></div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <label for="attendance">Attendance</label>
+                    <input type="text" id="attendance" maxlength="20" placeholder="Enter attendance status">
+                </div>
+                <div class="stat-box">
+                    <label for="connectedCalls">Total Connected Calls</label>
+                    <input type="number" id="connectedCalls" min="0" max="9999" value="0">
+                </div>
+                <div class="stat-box">
+                    <label for="ordersPlaced">Total Orders Placed</label>
+                    <input type="number" id="ordersPlaced" min="0" max="9999" value="0">
+                </div>
+                <div class="stat-box">
+                    <label for="successful">Successful</label>
+                    <input type="number" id="successful" min="0" max="9999" value="0">
+                </div>
+                <div class="stat-box">
+                    <label for="pending">Pending</label>
+                    <input type="number" id="pending" min="0" max="9999" value="0">
+                </div>
+                <div class="stat-box">
+                    <label for="cancelled">Cancelled</label>
+                    <input type="number" id="cancelled" min="0" max="9999" value="0">
+                </div>
+                <div class="stat-box">
+                    <label for="overwritten">Overwritten</label>
+                    <input type="number" id="overwritten" min="0" max="9999" value="0">
+                </div>
+            </div>
+            
+            <button class="btn btn-success" id="saveButton" onclick="saveReport()">
+                <i class="fas fa-save"></i> Save Report
+            </button>
+            <button class="btn btn-primary" id="updateButton" style="display: none;" onclick="updateReport()">
+                <i class="fas fa-sync-alt"></i> Update Report
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        © Agent Portal 2025 | Data is securely stored in Firebase
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCnhVN4BJTeOiDWpuL_eVPQLjIy9DXqB5A",
+            authDomain: "agentrp.firebaseapp.com",
+            projectId: "agentrp",
+            storageBucket: "agentrp.firebasestorage.app",
+            messagingSenderId: "930887247422",
+            appId: "1:930887247422:web:c0281d3500fa2b0b5dd36f"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        
+        let currentAgent = null;
+        let currentHalf = '';
+        let currentReportId = null;
+        let isAuthenticating = false;
+        
+        // Set initial UI based on authentication state
+        window.addEventListener('load', function() {
+            // Hide both containers initially to prevent flash
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('reportContainer').style.display = 'none';
+            
+            // Set current half based on time of day
+            setCurrentHalf();
+            
+            // Check authentication state
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // User is signed in
+                    currentAgent = JSON.parse(localStorage.getItem('currentAgent'));
+                    showReportUI();
+                    checkExistingReport();
+                } else {
+                    // User is signed out
+                    showLoginUI();
+                }
+                isAuthenticating = false;
+            });
+        });
+        
+        // Set current half based on time
+        function setCurrentHalf() {
+            const now = new Date();
+            const hours = now.getHours();
+            
+            // First half: 10AM to 2PM (10 to 14)
+            // Second half: 2PM to 10PM (14 to 22)
+            if (hours >= 10 && hours < 14) {
+                currentHalf = 'first';
+            } else if (hours >= 14 && hours < 22) {
+                currentHalf = 'second';
+            } else {
+                // Outside working hours, default to first half
+                currentHalf = 'first';
+            }
+        }
+        
+        // Set current date
+        function setCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        function selectHalf(half) {
+            currentHalf = half;
+            updateHalfUI();
+            checkExistingReport();
+        }
+        
+        function updateHalfUI() {
+            const firstHalfBtn = document.getElementById('firstHalfBtn');
+            const secondHalfBtn = document.getElementById('secondHalfBtn');
+            const now = new Date();
+            const hours = now.getHours();
+            
+            // Reset both buttons
+            firstHalfBtn.classList.remove('active');
+            secondHalfBtn.classList.remove('active');
+            
+            // Activate the selected button
+            document.querySelector(`[data-half="${currentHalf}"]`).classList.add('active');
+            
+            // Enable/disable based on current time
+            const isFirstHalfActive = (hours >= 10 && hours < 14);
+            const isSecondHalfActive = (hours >= 14 && hours < 22);
+            
+            // Enable input fields for the active half, disable for the other
+            const inputFields = document.querySelectorAll('.stat-box input');
+            
+            if (currentHalf === 'first') {
+                inputFields.forEach(field => field.disabled = !isFirstHalfActive);
+                firstHalfBtn.disabled = false;
+                secondHalfBtn.disabled = !isSecondHalfActive;
+            } else {
+                inputFields.forEach(field => field.disabled = !isSecondHalfActive);
+                firstHalfBtn.disabled = !isFirstHalfActive;
+                secondHalfBtn.disabled = false;
+            }
+            
+            // Also disable buttons if outside working hours
+            if (!isFirstHalfActive && !isSecondHalfActive) {
+                inputFields.forEach(field => field.disabled = true);
+                firstHalfBtn.disabled = true;
+                secondHalfBtn.disabled = true;
+            }
+        }
+        
+        function showLoginUI() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('reportContainer').style.display = 'none';
+            localStorage.removeItem('currentAgent');
+            currentAgent = null;
+        }
+        
+        function showReportUI() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('reportContainer').style.display = 'block';
+            document.getElementById('agentName').textContent = currentAgent ? currentAgent.name : 'Agent';
+            setCurrentDate();
+            updateHalfUI();
+            
+            // Add animation
+            document.getElementById('reportContainer').classList.add('animate-fadeIn');
+        }
+        
+        function showStatus(message, isSuccess) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = isSuccess ? 'status-message status-success' : 'status-message status-error';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        function loginAgent() {
+            const agentId = document.getElementById('agentId').value;
+            
+            if (!agentId) {
+                showStatus('Please enter your Agent ID', false);
+                return;
+            }
+            
+            // Add animation effect
+            const loginBtn = document.querySelector('.btn-primary');
+            loginBtn.classList.add('animate-pulse');
+            
+            // Verify agent ID
+            verifyAgentId(agentId).then(agentData => {
+                if (agentData) {
+                    currentAgent = agentData;
+                    localStorage.setItem('currentAgent', JSON.stringify(agentData));
+                    
+                    // Sign in with Firebase anonymously
+                    auth.signInAnonymously()
+                        .then(() => {
+                            showReportUI();
+                            checkExistingReport();
+                        })
+                        .catch(error => {
+                            showStatus('Login error: ' + error.message, false);
+                        });
+                } else {
+                    showStatus('Invalid Agent ID', false);
+                }
+                
+                // Remove animation
+                setTimeout(() => {
+                    loginBtn.classList.remove('animate-pulse');
+                }, 500);
+            });
+        }
+        
+        function logout() {
+            auth.signOut().then(() => {
+                showLoginUI();
+            });
+        }
+        
+        function checkExistingReport() {
+            if (!currentAgent) return;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const reportRef = db.collection('reports')
+                .where('agentId', '==', currentAgent.id)
+                .where('date', '==', today)
+                .where('half', '==', currentHalf);
+            
+            reportRef.get().then(snapshot => {
+                if (!snapshot.empty) {
+                    // Existing report found
+                    const reportData = snapshot.docs[0].data();
+                    currentReportId = snapshot.docs[0].id;
+                    
+                    // Fill the form with existing data
+                    document.getElementById('attendance').value = reportData.attendance || '';
+                    document.getElementById('connectedCalls').value = reportData.connectedCalls || 0;
+                    document.getElementById('ordersPlaced').value = reportData.ordersPlaced || 0;
+                    document.getElementById('successful').value = reportData.successful || 0;
+                    document.getElementById('pending').value = reportData.pending || 0;
+                    document.getElementById('cancelled').value = reportData.cancelled || 0;
+                    document.getElementById('overwritten').value = reportData.overwritten || 0;
+                    
+                    // Show update button instead of save
+                    document.getElementById('saveButton').style.display = 'none';
+                    document.getElementById('updateButton').style.display = 'block';
+                    
+                    showStatus('Loaded existing report for this half', true);
+                } else {
+                    // No existing report
+                    resetForm();
+                    document.getElementById('saveButton').style.display = 'block';
+                    document.getElementById('updateButton').style.display = 'none';
+                    currentReportId = null;
+                }
+            }).catch(error => {
+                console.error('Error checking existing report:', error);
+            });
+        }
+        
+        function resetForm() {
+            document.getElementById('attendance').value = '';
+            document.getElementById('connectedCalls').value = 0;
+            document.getElementById('ordersPlaced').value = 0;
+            document.getElementById('successful').value = 0;
+            document.getElementById('pending').value = 0;
+            document.getElementById('cancelled').value = 0;
+            document.getElementById('overwritten').value = 0;
+        }
+        
+        function saveReport() {
+            if (!currentAgent) {
+                showStatus('Please login first', false);
+                return;
+            }
+            
+            const attendanceValue = document.getElementById('attendance').value;
+            if (!attendanceValue) {
+                showStatus('Please enter attendance status', false);
+                return;
+            }
+            
+            const reportData = {
+                agentId: currentAgent.id,
+                agentName: currentAgent.name,
+                teamLeader: currentAgent.teamLeader,
+                date: new Date().toISOString().split('T')[0],
+                half: currentHalf,
+                attendance: attendanceValue,
+                connectedCalls: parseInt(document.getElementById('connectedCalls').value) || 0,
+                ordersPlaced: parseInt(document.getElementById('ordersPlaced').value) || 0,
+                successful: parseInt(document.getElementById('successful').value) || 0,
+                pending: parseInt(document.getElementById('pending').value) || 0,
+                cancelled: parseInt(document.getElementById('cancelled').value) || 0,
+                overwritten: parseInt(document.getElementById('overwritten').value) || 0,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Add animation
+            const saveBtn = document.getElementById('saveButton');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            saveBtn.disabled = true;
+            
+            db.collection('reports').add(reportData)
+                .then(docRef => {
+                    currentReportId = docRef.id;
+                    document.getElementById('saveButton').style.display = 'none';
+                    document.getElementById('updateButton').style.display = 'block';
+                    
+                    // Show success animation
+                    saveBtn.innerHTML = '<i class="fas fa-check checkmark"></i> Saved!';
+                    setTimeout(() => {
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                    }, 1500);
+                    
+                    showStatus('Report saved successfully!', true);
+                })
+                .catch(error => {
+                    console.error('Error saving report:', error);
+                    showStatus('Error saving report: ' + error.message, false);
+                    
+                    // Reset button
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                });
+        }
+        
+        function updateReport() {
+            if (!currentReportId) {
+                showStatus('No report to update', false);
+                return;
+            }
+            
+            const attendanceValue = document.getElementById('attendance').value;
+            if (!attendanceValue) {
+                showStatus('Please enter attendance status', false);
+                return;
+            }
+            
+            const updatedData = {
+                attendance: attendanceValue,
+                connectedCalls: parseInt(document.getElementById('connectedCalls').value) || 0,
+                ordersPlaced: parseInt(document.getElementById('ordersPlaced').value) || 0,
+                successful: parseInt(document.getElementById('successful').value) || 0,
+                pending: parseInt(document.getElementById('pending').value) || 0,
+                cancelled: parseInt(document.getElementById('cancelled').value) || 0,
+                overwritten: parseInt(document.getElementById('overwritten').value) || 0,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Add animation
+            const updateBtn = document.getElementById('updateButton');
+            const originalText = updateBtn.innerHTML;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            updateBtn.disabled = true;
+            
+            db.collection('reports').doc(currentReportId).update(updatedData)
+                .then(() => {
+                    // Show success animation
+                    updateBtn.innerHTML = '<i class="fas fa-check checkmark"></i> Updated!';
+                    setTimeout(() => {
+                        updateBtn.innerHTML = originalText;
+                        updateBtn.disabled = false;
+                    }, 1500);
+                    
+                    showStatus('Report updated successfully!', true);
+                })
+                .catch(error => {
+                    console.error('Error updating report:', error);
+                    showStatus('Error updating report: ' + error.message, false);
+                    
+                    // Reset button
+                    updateBtn.innerHTML = originalText;
+                    updateBtn.disabled = false;
+                });
+        }
+        
+        // Verify agent ID
+        async function verifyAgentId(agentId) {
+            // Agent data from the provided list
+            const agents = {
+                "44715": { id: 44715, name: "Awais Ur Rehman", teamLeader: "Shehzad Qayyum" },
+                "45992": { id: 45992, name: "Saima Sher Muhammad", teamLeader: "Shehzad Qayyum" },
+                "48618": { id: 48618, name: "Abbas Raheem", teamLeader: "Shehzad Qayyum" },
+                "48123": { id: 48123, name: "Aqsa Noreen", teamLeader: "Shehzad Qayyum" },
+                "46958": { id: 46958, name: "Khadija Sarwar", teamLeader: "Shehzad Qayyum" },
+                "48362": { id: 48362, name: "Safoora Nawaz", teamLeader: "Shehzad Qayyum" },
+                "48396": { id: 48396, name: "Raheela Butt", teamLeader: "Shehzad Qayyum" },
+                "43207": { id: 43207, name: "Mehreen Akhter", teamLeader: "Shehzad Qayyum" },
+                "2413": { id: 2413, name: "Muhammad Shahbaz", teamLeader: "Shehzad Qayyum" },
+                "2267": { id: 2267, name: "Salma Hameed - TC", teamLeader: "Shehzad Qayyum" },
+                "2681": { id: 2681, name: "Maryam Afshan", teamLeader: "Shehzad Qayyum" },
+                "48863": { id: 48863, name: "Saqlain Mushtaq", teamLeader: "Shehzad Qayyum" },
+                "48638": { id: 48638, name: "Nadia Manzoor", teamLeader: "Shehzad Qayyum" },
+                "48795": { id: 48795, name: "Amamah Rehman", teamLeader: "Shehzad Qayyum" },
+                "43810": { id: 43810, name: "Syed Hamza Ahmed", teamLeader: "Shehzad Qayyum" },
+                "46351": { id: 46351, name: "Maryam Mukhtiar", teamLeader: "Shehzad Qayyum" },
+                "54870": { id: 54870, name: "Rizwan Ali", teamLeader: "Shehzad Qayyum" },
+                "4937": { id: 4937, name: "Ali Raza", teamLeader: "Shehzad Qayyum" },
+                "2547": { id: 2547, name: "Shahnaz Gul", teamLeader: "Shehzad Qayyum" },
+                "48718": { id: 48718, name: "Ahsan Mazhar", teamLeader: "Shehzad Qayyum" },
+                "49087": { id: 49087, name: "Iqra Rasool", teamLeader: "Shehzad Qayyum" },
+                "49219": { id: 49219, name: "Asma Anwar Khan", teamLeader: "Shehzad Qayyum" },
+                "43930": { id: 43930, name: "Rida Fatima", teamLeader: "Shehzad Qayyum" },
+                "48194": { id: 48194, name: "Ahmed Jahangir Baig", teamLeader: "Shehzad Qayyum" },
+                "48668": { id: 48668, name: "Romeesa Shaheen", teamLeader: "Shehzad Qayyum" },
+                "49271": { id: 49271, name: "Farhat Batool", teamLeader: "Shehzad Qayyum" },
+                "49184": { id: 49184, name: "Zeeshan Shakoor", teamLeader: "Shehzad Qayyum" },
+                "49218": { id: 49218, name: "Aleena Ahmed", teamLeader: "Shehzad Qayyum" },
+                "49331": { id: 49331, name: "Muhammad Touqeer", teamLeader: "Shehzad Qayyum" }
+            };
+            
+            return agents[agentId] || null;
+        }
+
+        // Input validation
+        document.getElementById('attendance').addEventListener('input', function(e) {
+            // Allow only letters and spaces, max 20 characters
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '').substring(0, 20);
+        });
+
+        // Add input validation for numeric fields
+        const numericFields = ['connectedCalls', 'ordersPlaced', 'successful', 'pending', 'cancelled', 'overwritten'];
+        numericFields.forEach(fieldId => {
+            document.getElementById(fieldId).addEventListener('input', function(e) {
+                // Allow only numbers, max 4 digits
+                this.value = this.value.replace(/\D/g, '').substring(0, 4);
+            });
+        });
+    </script>
+</body>
+</html>

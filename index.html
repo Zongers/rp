@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        /* Hide everything for instant redirect */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 0;
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- No visible content -->
+
+    <script>
+        // Configuration - Update these URLs as needed
+        const MOBILE_LINK = "https://zongers.github.io/rpm/";  // Link 1 - Mobile optimized
+        const DESKTOP_LINK = "https://zongers.github.io/rpd/";  // Link 2 - Desktop optimized
+        
+        // Screen width threshold (in pixels) to determine mobile vs desktop
+        const MOBILE_BREAKPOINT = 768;
+
+        // Function to redirect based on screen width
+        function redirectBasedOnScreenSize() {
+            // Get the current screen width
+            const screenWidth = window.innerWidth;
+            
+            // Check if screen width is below the mobile breakpoint
+            if (screenWidth <= MOBILE_BREAKPOINT) {
+                // Redirect to mobile-optimized link
+                window.location.replace(MOBILE_LINK);
+            } else {
+                // Redirect to desktop-optimized link
+                window.location.replace(DESKTOP_LINK);
+            }
+        }
+
+        // Execute the redirect immediately when the script loads
+        redirectBasedOnScreenSize();
+    </script>
+</body>
+</html>
